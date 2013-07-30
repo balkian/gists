@@ -1,6 +1,7 @@
 import mechanize, cookielib
 from BeautifulSoup import BeautifulSoup
 import re, os
+from zipfile import ZipFile
 
 def get_image(tag, folder):
     if not os.path.isdir(folder):
@@ -12,6 +13,8 @@ def get_image(tag, folder):
     save = open(filename, 'wb')
     save.write(data)
     save.close()
+    return filename
+
 
 br=mechanize.Browser()
 cj = cookielib.LWPCookieJar()
@@ -22,6 +25,8 @@ br.set_handle_redirect(True)
 br.set_handle_referer(True)
 br.set_handle_robots(False)
 br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
+
+tozip = [];
 
 #Individuales
 r = br.open('http://www.etsit.upm.es/fotospromo85.html')
@@ -36,7 +41,7 @@ images_tags = galery(href=re.compile(r'pics/.{10}.jpg'))
 folder = 'individuales'
 for image in images_tags:
     url = image['href']
-    get_image(url, folder)
+    tozip.append(get_image(url, folder))
 
 # Ahora las de grupo
 link=r_tags(text=re.compile(r'grupo'))[0].parent['href']
@@ -45,4 +50,8 @@ images_tags = galery(href=re.compile(r'pics/.{10}.jpg'))
 folder = 'grupo'
 for image in images_tags:
     url = image['href']
-    get_image(url, folder)
+    tozip.append(get_image(url, folder))
+
+with ZipFile('fotos-85.zip', 'w') as myzip:
+    for i in tozip:
+        myzip.write(i)
