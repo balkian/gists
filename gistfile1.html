@@ -1,13 +1,13 @@
-<div class="widget-content">
 <style media="all" type="text/css">
 #badge{
+  font-size: 12px;
   position: relative;
   width: 180px;
   height: 210px;
   margin: 0 auto;
   /*border-bottom: 10px solid black;*/
-  -webkit-transform:rotate(-4deg);
-  -moz-transform:rotate(-4deg);
+  -webkit-transform:rotate(4deg);
+  -moz-transform:rotate(4deg);
 }
 
 /* entire container, keeps perspective */
@@ -45,9 +45,9 @@
   padding: 2px;
   padding-bottom: 30px;
   background-color: black;
-  box-shadow: -5px 5px 5px #555;
-  -webkit-box-shadow: -5px 5px 15px #555;
-  -moz-box-shadow: -5px 5px 15px #555;
+  box-shadow: -10px 10px 5px #222;
+  -webkit-box-shadow: -10px 10px 15px #222;
+  -moz-box-shadow: -10px 10px 15px #222;
 }
 
 /* front pane, placed above back */
@@ -57,8 +57,8 @@
 
 /* back, initially hidden pane */
 .back {
-  width: 148px;
-  height: 188px;
+  width: 152px;
+  height: 190px;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
   z-index: 3;
@@ -66,9 +66,13 @@
   padding: 15px;
   padding-top: 5px;
   border: 1px gray solid;
+  color: white;
 }
 
 .back h1 {
+  font-size: 14px;
+  padding: 4px;
+  margin: 2px;
   border-bottom: 1px dashed gray;
 }
 
@@ -99,7 +103,7 @@
     <div class="flipper">
       <div class="front">
         <!-- front content -->
-        <img width="180" height="180" src="http://1.bp.blogspot.com/-u19-E3_AuGI/UIH9pgHT0VI/AAAAAAAAAFg/NFwtLZUOF24/s1600/Homer-Mr+X1.jpg" class="sticky" id="avatar">
+        <img width="180" height="180" src="http://1.bp.blogspot.com/-u19-E3_AuGI/UIH9pgHT0VI/AAAAAAAAAFg/NFwtLZUOF24/s1600/Homer-Mr+X1.jpg" class="sticky" id="avatar" />
       </div>
       <div class="back">
         <!-- back content -->
@@ -114,5 +118,4 @@
             </dl>
       </div>
     </div>
-</div>
 </div>
