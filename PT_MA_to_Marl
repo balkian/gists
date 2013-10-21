@@ -1,0 +1,49 @@
+{
+  "@context": {
+    "marl": "http://gsi.dit.upm.es/ontologies/marl#",
+    "pt": "http://paradigmatecnologico.com/domains#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "marl:domain": {
+        "@type": "@id"    
+    },
+    "field2": {
+        "@id": "_:field2",
+        "@type" : "xsd:string",
+        "http://www.w3.org/2000/01/rdf-schema#label":  "Field with the POS tagging"
+    },
+    "field3": {
+        "@id": "_:field3",
+        "@type" : "xsd:string",
+        "http://www.w3.org/2000/01/rdf-schema#label":  "Modified version of the source, verbs in infinitive and singular forms"
+    },
+    "field4": {
+        "@id": "_:field4",
+        "@type" : "xsd:string",
+        "http://www.w3.org/2000/01/rdf-schema#label":  "Entity"
+    }
+  },
+  "@graph": [
+ 
+ {
+    "@id": "{{ linesplit(f.name,"/")[-1] }}",
+    "@type": "marl:SentimentAnalysis",
+    "marl:maxPolarityValue": 10,
+    "marl:minPolarityValue": 0
+  },
+{% for line in f %}
+{% set i=linesplit(line, "\t") %}
+{% set node="_:BlankNode%s" % loop.index %}
+  {
+    "@id": "{{ node }}",
+    "@type": "marl:opinion",
+    "marl:opinionText": {{ i[1] | escapejs }},
+    "marl:domain": "pt:{{ i[0] }}",
+    "marl:polarityValue": {{ i[5] }},
+    "field0": {{ i[0] | escapejs }},
+    "field3": {{ i[3] | escapejs }},
+    "field4": {{ i[4] | escapejs }}
+ 
+  } {% if not loop.last %} , {% endif %}
+{% endfor %}
+]
+}
