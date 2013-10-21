@@ -16,19 +16,19 @@
         "@type" : "xsd:string",
         "http://www.w3.org/2000/01/rdf-schema#label":  "Modified version of the source, verbs in infinitive and singular forms"
     },
-    "field3": {
-        "@id": "_:field3",
-        "@type" : "xsd:string",
-        "http://www.w3.org/2000/01/rdf-schema#label":  "Modified version of the source, verbs in infinitive and singular forms"
-    },
     "field4": {
         "@id": "_:field4",
         "@type" : "xsd:string",
         "http://www.w3.org/2000/01/rdf-schema#label":  "Entity"
+    },
+    "field6": {
+        "@id": "_:field6",
+        "@type" : "xsd:string",
+        "http://www.w3.org/2000/01/rdf-schema#label":  "Synsets in the text"
     }
   },
   "@graph": [
-
+ 
  {
     "@id": "{{ linesplit(f.name,"/")[-1] }}",
     "@type": "marl:SentimentAnalysis",
@@ -41,13 +41,14 @@
   {
     "@id": "{{ node }}",
     "@type": "marl:opinion",
-    "marl:opinionText": "{{ i[1] | escape }}",
+    "marl:opinionText": {{ i[1] | escapejs }},
     "marl:domain": "pt:{{ i[0] }}",
     "marl:polarityValue": {{ i[5] }},
-    "field0": "{{ i[0] | escape }}",
-    "field3": "{{ i[3] | escape }}",
-    "field4": "{{ i[4] | escape }}"
-
+    "field0": {{ i[0] | escapejs }},
+    "field3": {{ i[3] | escapejs }},
+    "field4": {{ i[4] | escapejs }},
+    "field6": {{ i[6] | escapejs }}
+ 
   } {% if not loop.last %} , {% endif %}
 {% endfor %}
 ]
