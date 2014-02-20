@@ -1,0 +1,80 @@
+{
+    "@context": {
+        "@base": "http://demos.gsi.dit.upm.es/eurosentiment/generator#{{ filename }}",
+        "dc": "http://purl.org/dc/terms/",
+        "dc:subject": {
+            "@type": "@id"
+        },
+        "emotions": {
+            "@container": "@list",
+            "@id": "onyx:hasEmotionSet",
+            "@type": "onyx:EmotionSet"
+        },
+        "marl": "http://www.gsi.dit.upm.es/ontologies/marl#",
+        "nif": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#",
+        "onyx": "http://www.gsi.dit.upm.es/ontologies/onyx#",
+        "pt": "http://paradigmatecnologico.com/domains#",
+        "opinions": {
+            "@container": "@list",
+            "@id": "marl:hasOpinion",
+            "@type": "marl:Opinion"
+        },
+        "prov": "http://www.w3.org/ns/prov#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "results": {
+            "@container": "@index",
+            "@id": "@graph"
+        },
+        "strings": {
+            "@reverse": "nif:hasContext",
+            "@type": "nif:String"
+        },
+        "wnaffect": "http://www.gsi.dit.upm.es/ontologies/wnaffect#",
+        "xsd": "http://www.w3.org/2001/XMLSchema#"
+    },
+    "@id": "{{ linesplit(f.name,"/")[-1] }}",
+    "results": {
+        "analysis": [
+            {
+                "@id": "{{ linesplit(f.name,"/")[-1] }}#Analysis1",
+                "@type": [
+                    "marl:SentimentAnalysis"
+                ],
+                "dc:language": "{{ language}}",
+                "marl:maxPolarityValue": 1.0,
+                "marl:minPolarityValue": 0.0
+            }
+        ],
+        "entries": [
+{% for line in f %}
+{% set i=linesplit(line, "\t") %}
+{% set node="_:BlankNode%s" % loop.index %}
+            {
+                "@id": "{{ node }}",
+                "dc:subject": "pt:{{ i[1] }}",
+                "opinions": [
+                    {
+{% set pol= i[6] | int %}
+{% if pol%}
+                         "marl:polarityValue": {{ pol }},
+{% if pol > 5 %}
+                         "marl:hasPolarity": "marl:Positive",
+{% elif pol < 5 %}
+                         "marl:hasPolarity": "marl:Negative",
+{% else %}
+                         "marl:hasPolarity": "marl:Neutral",
+{% endif %}
+{% endif %}
+                        "marl:describesObject": "pt:{{ i[3] }}",
+                        "marl:extractedFrom": "{{ i[5] }}"
+                    }
+                ],
+                "nif:isString": {{ i[2] | escapejs }},
+                "prov:generatedBy": "pt:agent",
+                "strings": [
+                ]
+            } {% if not loop.last %} , {% endif %}
+{% endfor%}
+        ]
+    }
+}
