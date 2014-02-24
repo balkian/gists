@@ -1,10 +1,11 @@
 def array_combinations(*args):
-    combinations = [[i] for i in args[0]]
+    combinations = [[i] for i in set(args[0])]
     for arg in args[1:]:
         tempcomb = []
-        for i in arg:
+        for i in set(arg):
             tempcomb += [c+[i] for c in combinations if i not in c ]
         combinations = tempcomb
     return combinations
 res = array_combinations(a,b,c)
+print res
 print len(res)
