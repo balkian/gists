@@ -1,3 +1,6 @@
+a=set([1,2,3,4])
+b=set([4,5,6,7])
+c=set([7,8,9])
 def array_combinations(*args):
     combinations = [[i] for i in set(args[0])]
     for arg in args[1:]:
