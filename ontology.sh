@@ -8,7 +8,7 @@ fi
 
 if [ $# -lt 2 ]
   then
-    DIR=~/Doctorado/Ontologies/onyx
+    DIR=~/Doctorado/Ontologies/Onyx
   else
     DIR=$2
 fi
