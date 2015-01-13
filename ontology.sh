@@ -24,6 +24,7 @@ if [ $# -lt 4 ]
 fi
 
 echo "Generating docs for $ONTO from: $DIR"
+echo "Namespace: $NS"
 
 python specgen6.py --indir=$DIR --ns=$NS  --prefix=$ONTO --ontofile=$ONTO.owl --outdir=$DIR/spec/latest --templatedir= --outfile=index.html
 echo "Uploading to $REMOTE"
