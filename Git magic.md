@@ -1,11 +1,13 @@
-# Create a submodule from a specific folder
+#GIT MAGIC
+
+## Create a submodule from a specific folder
 ```
 git clone <your_project> <your_submodule>
 cd <your_submodule>
 git filter-branch --subdirectory-filter 'path/to/your/submodule' --prune-empty -- --all
 ```
 
-# Remove a file from history
+## Remove a file from history
 
 ```
 git filter-branch --force --index-filter \
