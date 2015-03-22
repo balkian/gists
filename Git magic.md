@@ -14,3 +14,6 @@ git filter-branch --force --index-filter \
 'git rm --cached --ignore-unmatch \#web40.tex\#' \
 --prune-empty --tag-name-filter cat -- --all
 ```
+
+## Change commit date
+    git commit --amend --date="Wed Feb 16 14:00 2011 +0100"
