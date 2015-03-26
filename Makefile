@@ -3,13 +3,12 @@
 # Author: @balkian
 # TODO: Only import the tex files used in the main file, and their images.
 
+AUX_DIR=.aux
 LATEX=$(basename $(shell grep -l '\\begin{document' *.tex))
 LETTER=letter
 COVER=cover
 HIGHLIGHTS=highlights
-
 HTML_OUT=$(LETTER).html
-AUX_DIR=.aux
 
 .PHONY: all cover clean highlights latex letter zip
 
@@ -42,14 +41,15 @@ $(HIGHLIGHTS).pdf: $(HIGHLIGHTS).md
 $(COVER).pdf: $(COVER).md
 	pandoc $(COVER).md -o $(COVER).pdf
 
-$(PAPER).zip: $(LATEX).pdf $(LETTER).pdf
-	@zip $(LATEX).zip *.tex  $(LETTER).pdf $(COVER).pdf $(HIGHLIGHTS).pdf $(LATEX).pdf
+$(LATEX).zip: $(LATEX).pdf $(LETTER).pdf $(HIGHLIGHTS).pdf $(COVER).pdf
+	@zip $(LATEX).zip *.tex  $(LETTER).pdf $(COVER).pdf $(HIGHLIGHTS).pdf
 	@for r in `sed -n 's/.*bibliography{\(.*\)}.*/\1/p' *.tex`; do \
 		zip $(LATEX).zip  $$r.bib; \
 	done
 	@for i in `sed -n 's/.*includegraphics\[.*\]{\(.*\)}.*/\1/p' *.tex`; do \
 		zip $(LATEX).zip  figures/$$i.eps; \
 	done
+	zip Makefile
 
 clean:
 	@-rm -rf $(AUX_DIR)
