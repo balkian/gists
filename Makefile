@@ -47,7 +47,7 @@ $(PAPER).zip: $(LATEX).pdf $(LETTER).pdf
 	@for r in `sed -n 's/.*bibliography{\(.*\)}.*/\1/p' *.tex`; do \
 		zip $(LATEX).zip  $$r.bib; \
 	done
-	@for i in `sed -n 's/.*includegraphics{\(.*\)}.*/\1/p' *.tex`; do \
+	@for i in `sed -n 's/.*includegraphics\[.*\]{\(.*\)}.*/\1/p' *.tex`; do \
 		zip $(LATEX).zip  figures/$$i.eps; \
 	done
 
