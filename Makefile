@@ -45,7 +45,7 @@ $(COVER).pdf: $(COVER).md
 $(PAPER).zip: $(LATEX).pdf $(LETTER).pdf
 	@zip $(LATEX).zip *.tex  $(LETTER).pdf $(COVER).pdf $(HIGHLIGHTS).pdf $(LATEX).pdf
 	@for r in `sed -n 's/.*bibliography{\(.*\)}.*/\1/p' *.tex`; do \
-		zip $().zip  $$r.bib; \
+		zip $(LATEX).zip  $$r.bib; \
 	done
 	@for i in `sed -n 's/.*includegraphics{\(.*\)}.*/\1/p' *.tex`; do \
 		zip $(LATEX).zip  figures/$$i.eps; \
@@ -69,4 +69,4 @@ cover: $(COVER).pdf
 highlights: $(HIGHLIGHTS).pdf
 latex: $(LATEX).pdf
 letter: $(LETTER).pdf
-zip: $(PAPER).zip
+zip: $(LATEX).zip
