@@ -1,13 +1,21 @@
-AUX_DIR=.aux
+# Some automation to submit to a journal (e.g. Elsevier).
+# It detects the main latex file and eps files used.
+# Author: @balkian
+# TODO: Only import the tex files used in the main file, and their images.
+
 LATEX=$(basename $(shell grep -l '\\begin{document' *.tex))
 LETTER=letter
 COVER=cover
 HIGHLIGHTS=highlights
+
 HTML_OUT=$(LETTER).html
+AUX_DIR=.aux
 
 .PHONY: all cover clean highlights latex letter zip
 
-all: $(COVER).pdf $(LETTER).pdf | zip
+default: latex
+
+all: $(LATEX).pdf $(LETTER).pdf $(COVER).pdf $(HIGHLIGHTS).pdf | zip
 
 $(AUX_DIR):
 	@mkdir -p $(AUX_DIR)
