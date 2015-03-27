@@ -1,0 +1,45 @@
+{% set f = open_file(encoding="utf-8-sig") %}
+{% set posdic = {
+	"N": "lexinfo:noun",
+    "AJ": "lexinfo:adjective",
+    "V": "lexinfo:verb"
+}
+%}
+{% if not language %}
+
+{% endif %}
+{
+"@context": {
+{% if baseuri %}
+	"@base": {{ baseuri | escapejs }},
+{% endif %}
+    "lemon": "http://lemon-model.net/lemon#",
+    "marl": "http://www.gsi.dit.upm.es/ontologies/marl/ns#",
+    "lexinfo": "http://www.lexinfo.net/ontology/2.0/lexinfo",
+    "entries": {
+    	"@type": "lemon:LexicalEntry",
+        "@id": "lemon:entry"
+    },
+    "sense": {
+    	"@id": "lemon:sense",
+    	"@type": "lemon:Sense"
+    }
+},
+"@type": "lemon:Lexicon",
+{% if language %}
+"lemon:language": {{ language | escapejs }},
+{% endif %}
+"entries": [
+{% for line in islice(f, 1, None) %}
+{
+{% set i=re.split('[^\w.]+', line.strip(" \t\n\r")) %}
+"lemon:canonicalForm": { "lemon:writtenRep": {{ i[0].strip() | escapejs }}},
+"sense": {
+    "marl:hasPolarityValue":  {{ i[2] | escapejs }}
+},
+"lexinfo:partOfSpeech": {{ posdic.get(i[1],i[1]) | escapejs }},
+"weight": {{ i[3] | escapejs }}
+} {{ "," if not loop.last }}
+{% endfor %} {# for line #}
+]
+}

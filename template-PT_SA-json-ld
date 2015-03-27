@@ -1,0 +1,65 @@
+{% set f=open_file(separator="\t") %}
+{% if not base %}
+  {% set base="http://demos.gsi.dit.upm.es/eurosentiment/translator/process" %}
+{% endif %}
+{
+    "@context": [
+        "http://demos.gsi.dit.upm.es/eurosentiment/static/context.jsonld"
+    ],
+    "@id": "{{ base }}",
+    "analysis": [
+        {
+            "@id": "{{ base }}#SynsetAnnotated",
+            "@type": [
+                "marl:SentimentAnalysis"
+            ],
+        {% if language %}
+            "dc:language": "{{ language}}",
+        {% endif %}
+            "marl:maxPolarityValue": 10.0,
+            "marl:minPolarityValue": 0.0,
+            "prov:wasAssociatedWith": "pt:agent"
+        }
+    ],
+    "entries": [
+{% for line in f %}
+{% set i=linesplit(line, "\t") %}
+{% set node="_:BlankNode%s" % loop.index %}
+{% set text = i[0] %}
+{% set syntax=linesplit(i[1][1:-1], ",") %}
+{% set pol= i[2] | float %}
+        {
+            "@id": "{{ node }}",
+            "opinions": [
+                {
+
+
+{% if pol%}
+                     "marl:polarityValue": {{ pol }},
+{% if pol > 5 %}
+                     "marl:hasPolarity": "marl:Positive"
+{% elif pol < 5 %}
+                     "marl:hasPolarity": "marl:Negative"
+{% else %}
+                     "marl:hasPolarity": "marl:Neutral"
+{% endif %}
+{% endif %}
+                }
+            ],
+            "nif:isString": {{ text | escapejs }},
+            "strings": [
+              {% for s in syntax %}
+              {
+              {% set parts=linesplit(s, ";;") %}
+			  {% set synsets=linesplit(parts[3][1:-1], ",") %}
+              "nif:anchorOf": {{ parts[0] | escapejs }},
+              
+              "nif:posTag": "pt:{{ parts[1] }}",
+              "nif:lemma": {{ parts[2] | escapejs }},
+                "pt:synset": [{% for synset in synsets if synset %}"{{synset}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+              }{% if not loop.last %}, {% endif %}{% endfor %}
+            ]
+        } {% if not loop.last %} , {% endif %}
+{% endfor%}
+    ]
+}

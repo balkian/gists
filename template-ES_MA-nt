@@ -1,0 +1,105 @@
+{% set f=open_file("xls") %}
+{% set sheet=f.sheet_by_index(0) %}
+{% if not baseuri %}
+{% set baseuri = "http://demos.gsi.dit.upm.es/eurosentiment/generator/process/default#"  %}
+{% endif %}
+{% set prefixes = {
+  "a": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "marl": "http://www.gsi.dit.upm.es/ontologies/marl/ns#",
+  "wna": "http://www.gsi.dit.upm.es/ontologies/wnaffect/ns#",
+  "prov": "http://www.w3.org/ns/prov#",
+  "onyx": "http://www.gsi.dit.upm.es/ontologies/onyx/ns#",
+  "expsys": "http://expertsystem.net/ns#",
+  "nif": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#",
+  "dc": "http://purl.org/dc/terms/"
+} 
+%}
+{% macro p(pref, value='') -%}
+	<{{ prefixes[pref] }}{{ value }}>
+{%- endmacro %}
+{% set analysis = "<%sMachineAnnotated>" % baseuri %}
+{{ analysis }} {{ p("a") }} {{ p("marl", "SentimentAnalysis") }} .
+{{ analysis }} {{ p("a") }} {{ p("onyx", "EmotionAnalysis") }} .
+{{ analysis }} {{ p("marl", "maxPolarityValue") }} "1.0" .
+{{ analysis }} {{ p("marl", "minPolarityValue") }} "0.0" .
+{{ analysis }} {{ p("prov", "wasAssociatedWith") }} {{ p("expsys", "agent") }} .
+{% if language %}
+{{ analysis }} {{ p("dc", "language") }} "{{ language }}" .
+{% endif %}
+
+{% for i in range(1, sheet.nrows) %}
+{% set node="_:BlankNode%s" % i %}
+    {% set row= sheet.row_values(i) %}
+    {% set TEXT = row[0] %}
+    {% set LEMMA = row[1] %}
+    {% set WN_POS = row[2] %}
+    {% set WN_SYNSET = row[3] %}
+    {% set DOMAIN = row[4] %}
+    {% set BRAND = row[5] %}
+    {% set KIND = row[6] %}
+    {% set PRODUCT = row[7] %}
+    {% set PART = row[8] %}
+    {% set QUALITY = row[9] %}
+    {% set SENTIMENT = row[10] %}
+    {% set EMOTION = row[11] %}
+{% if TEXT %}
+	{% if DOMAIN %}
+    {% set entry = "<%sContext%s>" % (baseuri, loop.index) %}
+    {% set opinion = "<%sOpinion%s>" % (baseuri, loop.index) %}
+{{ entry }} {{ p("a") }} {{ p("nif", "Context") }} .
+{{ entry }} {{ p("a") }} {{ p("nif", "RFC5147String") }} .
+{{ entry }} {{ p("marl", "hasOpinion") }} {{ opinion }} .
+
+{{ entry }} {{ p("nif", "isString") }} {{ TEXT | escapejs }} .
+ 
+{{ opinion }} {{ p("a") }} {{ p("marl", "Opinion") }} .
+{{ opinion }} {{ p("prov", "wasGeneratedBy") }} {{ analysis }} .
+
+{{ opinion }} {{ p("expsys", "sentiment") }} {{ p("expsys", SENTIMENT) }} .
+
+
+{% if SENTIMENT == "EXCELLENT" %}
+{{ opinion }} {{ p("marl", "hasPolarity") }} {{ p("marl", "Positive") }} .
+{{ opinion }} {{ p("marl", "polarityValue") }} "1.0" .
+
+{% elif SENTIMENT == "GOOD" %}
+{{ opinion }} {{ p("marl", "hasPolarity") }} {{ p("marl", "Positive") }} .
+{{ opinion }} {{ p("marl", "polarityValue") }} "0.8" .
+{% elif SENTIMENT == "BAD" %}
+{{ opinion }} {{ p("marl", "hasPolarity") }} {{ p("marl", "Negative") }} .
+{{ opinion }} {{ p("marl", "polarityValue") }} "0.2" .
+{% elif SENTIMENT == "TERRIBLE" %}
+{{ opinion }} {{ p("marl", "hasPolarity") }} {{ p("marl", "Negative") }} .
+{{ opinion }} {{ p("marl", "polarityValue") }} "0.0" .
+
+{% else %} 
+{{ opinion }} {{ p("marl", "hasPolarity") }} {{ p("marl", "Neutral") }} .
+{% endif %}
+
+{% if EMOTION %} 
+{% set emotionSet = "<%sEmotionSet%s>" % (baseuri, loop.index) %}
+{% set emotion = "<%sEmotion%s>" % (baseuri, loop.index) %}
+{{ entry }} {{ p("onyx", "hasEmotionSet") }} {{ emotionSet }} .
+{{ emotionSet }} {{ p("prov", "wasGeneratedBy") }} {{ analysis }} .
+{{ emotionSet }} {{ p("onyx", "hasEmotion") }} {{ emotion }} .
+{{ emotion }} {{ p("onyx", "hasEmotionCategory") }} {{ p("wna", EMOTION) }} .
+{% endif %}{# endif Emotion#}
+
+    {% else %}
+
+{% set string = "<%sString%s>" % (baseuri, loop.index) %}
+{{ string }} {{ p("nif", "hasContext") }} {{ entry }} .
+{{ string }} {{ p("nif", "anchorOf") }} {{ TEXT | escapejs }} .
+{% if WN_POS not in ("", "N/S", "N/C") %}
+{{ string }} {{ p("nif", "posTag") }} {{ WN_POS | escapejs }} .
+{% endif %}
+{% if LEMMA not in ("", "#", "N/S", "N/C") %}
+{{ string }} {{ p("nif", "lemma") }} {{ LEMMA | escapejs }} .
+{% endif %}
+{% if WN_SYNSET not in ("", "N/S", "N/C") %}
+{{ string }} {{ p("expsys", "synset") }} {{ WN_SYNSET | escapejs }} .
+{% endif %}
+
+{% endif %}
+{% endif %}
+{% endfor %}
