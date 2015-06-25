@@ -1,0 +1,5 @@
+select distinct ?country
+where {
+?country <http://dbpedia.org/ontology/demonym> ?dem
+       FILTER regex(?dem, "^Spanish")
+} LIMIT 5
