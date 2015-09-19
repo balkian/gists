@@ -18,6 +18,7 @@ for i in resp.json()["answer"]["availability"]:
         for j in i["metaZones"]:
             if j["availability"] not in ["unavaible", "unknown"]:
                 print(j["zone"], j["availability"])
-                tkm.showinfo(title="Greetings", message="%s: %s - %s!" % (i["reference"],
-                                                                          j["zone"],
-                                                                          j["availability"]))
+                tkm.showinfo(title="Greetings",
+                             message="%s: %s - %s!" % (i["reference"],
+                                                       j["zone"],
+                                                       j["availability"]))
