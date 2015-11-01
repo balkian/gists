@@ -15,6 +15,6 @@ ssh dokku@yourdomain.com domains:add appname domain.com
 
 Find all the available commands and help:
 ```
-   ssh dokku@yourdomain.com
+ssh dokku@yourdomain.com
 ```
    
