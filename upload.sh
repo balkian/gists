@@ -2,7 +2,7 @@
 if [ $# -lt 1 ]
   then
     echo "Please, specify an ontology"
-    return
+    exit 0
   else
     ONTO=$1
 fi
@@ -15,10 +15,13 @@ fi
 
 if [ $# -lt 3 ]
   then
-    REMOTE=gsi-web@web-home.dit.upm.es:lib/www/gsi/ontologies/$ONTO/
+    REMOTE=ontologies@gsi.dit.upm.es:$ONTO/
   else
     REMOTE=$3
 fi
 
 echo "Uploading to $REMOTE"
-rsync -r --links --copy-unsafe-links $DIR $REMOTE
+#scp -r $DIR $REMOTE
+sftp $REMOTE -b <<EOF
+mput -r $DIR
+EOF

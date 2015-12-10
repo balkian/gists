@@ -1,27 +1,35 @@
 #!/bin/bash
 if [ $# -lt 1 ]
   then
-    ONTO=onyx
+    echo "Usage: $0 <ONTO> <FORMAT> <VERSION> <DIR> <NS>"
+    echo "Example: $0 onto owl latest /tmp/Onto http://example.com/ontologies owl"
+    exit
   else
     ONTO=$1
 fi
 if [ $# -lt 2 ]
   then
-    VERSION=latest
+    FORMAT=owl
   else
-    VERSION=$2
+    FORMAT=$2
 fi
 if [ $# -lt 3 ]
   then
-    DIR=~/Doctorado/Ontologies/Onyx
+    VERSION=latest
   else
-    DIR=$3
+    VERSION=$3
 fi
 if [ $# -lt 4 ]
   then
+    DIR=~/Doctorado/Ontologies/$ONTO
+  else
+    DIR=$4
+fi
+if [ $# -lt 5 ]
+  then
     NS=http://www.gsi.dit.upm.es/ontologies/$ONTO/ns#
   else
-    NS=$4
+    NS=$5
 fi
 
 SPECPATH=~/Doctorado/tools/specgen6
@@ -32,11 +40,15 @@ echo "Namespace: $NS"
 cp -r $DIR/spec $DIR/spec_backup
 rm -rf $VERSION/
 mkdir $DIR/spec/$VERSION
-python $SPECPATH/specgen6.py --indir=$DIR --ns=$NS  --prefix=$ONTO --ontofile=$ONTO.owl --outdir=$DIR/spec/$VERSION --templatedir=$DIR --outfile=index.html
+python2 $SPECPATH/specgen6.py --indir=$DIR --ns=$NS  --prefix=$ONTO --ontofile=$ONTO.$FORMAT --outdir=$DIR/spec/$VERSION --templatedir=$DIR --outfile=index.html
 cd $DIR/spec
-rm index.html ns $ONTO.owl
+cp ../$ONTO.$FORMAT $VERSION/
+ln -s $ONTO.$FORMAT $VERSION/ns
+cp -R ../img $VERSION/
+cp ../style.css $VERSION/
+rm index.html img style.css ns $ONTO.$FORMAT
 ln -s $VERSION/index.html .
-ln -s $VERSION/$ONTO.owl $ONTO.owl
-ln -s $VERSION/$ONTO.owl ns
-ln -s ../img $VERSION/img
-ln -s ../style.css $VERSION/style.css
+ln -s $VERSION/$ONTO.$FORMAT $ONTO.$FORMAT
+ln -s $VERSION/$ONTO.$FORMAT ns
+ln -s $VERSION/img img
+ln -s $VERSION/style.css style.css
