@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $(date) - "$@" >> /tmp/octo-log
 CONF_FILE=$HOME/.octo.conf
 if [ ! -f "$CONF_FILE" ];
 then
@@ -25,5 +26,8 @@ case $1 in
             ;;
   home)
     send_octo '{ "command": "home", "axes": ["x", "y", "z"] }'
-;;
+    ;;
+  nothing)
+    echo "nothing $(date)" >> /tmp/prueba
+          ;;
 esac

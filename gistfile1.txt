@@ -1,0 +1,63 @@
+begin
+    button = KEY_5
+    prog = irexec
+    config = /home/balkian/octo.sh home
+    repeat = 0
+    delay = 3
+end
+begin
+    button = KEY_1
+    prog = irexec
+    config = /home/balkian/octo.sh move -10 10 0
+    repeat = 0
+    delay = 3
+end
+begin
+    button = KEY_2
+    prog = irexec
+    config = /home/balkian/octo.sh move 0 10 0
+    repeat = 0
+    delay = 3
+end
+begin
+    button = KEY_3
+    prog = irexec
+    config = /home/balkian/octo.sh move 10 10 0
+    repeat = 0
+    delay = 3
+end
+begin
+    button = KEY_4
+    prog = irexec
+    config = /home/balkian/octo.sh move -10 0 0
+    repeat = 0
+    delay = 3
+end
+begin
+    button = KEY_6
+    prog = irexec
+    config = /home/balkian/octo.sh move 10 0 0
+    repeat = 0
+    delay = 3
+end
+begin
+    button = KEY_7
+    prog = irexec
+    config = /home/balkian/octo.sh move -10 -10 0
+    repeat = 0
+    delay = 3
+end
+begin
+    button = KEY_8
+    prog = irexec
+    config = /home/balkian/octo.sh move 0 -10 0
+    repeat = 0
+    delay = 3
+end
+begin
+    button = KEY_9
+    prog = irexec
+    config = /home/balkian/octo.sh move 10 -10 0
+    repeat = 0
+    delay = 3
+end
