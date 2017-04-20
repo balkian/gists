@@ -9,4 +9,4 @@ Run jupyter either through the `jupyter notebook` command, or with docker:
 docker run -v $PWD/:/home/jovyan/work/ -p 8888:8888 jupyter/scipy-notebook
 ```
 
-Visit the URL you'll get, or copy the code.
+Visit the URL you'll get, or copy the token to access the notebook.
