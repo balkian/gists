@@ -8,7 +8,7 @@ class ControlModelM2(BaseBehaviour):
       self.infected_behaviour()
     …
   def infected_behaviour(self):
-    neutral_neighbors = self.get_neighboring_agents(state_id=0)
+    neutral_neighbors = self.get_neighboring_agents(state_id=self.NEUTRAL)
     for neighbor in neutral_neighbors:
       if random.random() < self.prob_infect:
         neighbor.state['id'] = self.INFECTED
