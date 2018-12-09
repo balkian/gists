@@ -1,0 +1,5 @@
+name: CoalitionExample
+agent_type: coalition.CoalitionAgent
+network_params:
+  generator: empty_graph
+  n: 100
