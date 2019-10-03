@@ -1,0 +1,13 @@
+{
+  "embeddings": [
+    {
+      "tensorName": "300 seeds",
+      "tensorShape": [
+        1975,
+        100
+      ],
+      "tensorPath": "https://lab.gsi.upm.es/oaraque/incel-embeddings/raw/master/300_seeds/neologisms_embeddings_2019-06-07_16-29.tsv",
+      "metadataPath": "https://lab.gsi.upm.es/oaraque/incel-embeddings/raw/master/300_seeds/neologisms_embeddings_words_2019-06-07_16-29.txt"
+    }
+  ]
+}
