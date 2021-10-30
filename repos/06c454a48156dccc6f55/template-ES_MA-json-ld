@@ -1,0 +1,96 @@
+{% set f=open_file("xls") %}
+{% set sheet=f.sheet_by_index(0) %}
+{% if not baseuri %}
+{% set baseuri="default" %}
+{% endif %}
+{
+    "@context": [
+      "http://demos.gsi.dit.upm.es/eurosentiment/static/context.jsonld",
+      {
+        "@base": "{{ baseuri }}", 
+        "brand": {
+          "@id": "_:brand",
+          "@type" : "xsd:string",
+          "http://www.w3.org/2000/01/rdf-schema#label":  "Brand of the entity"
+      },
+      "model": {
+          "@id": "_:model",
+          "@type" : "xsd:string",
+          "http://www.w3.org/2000/01/rdf-schema#label":  "Model of the entity"
+      },
+      "part": {
+          "@id": "_:part",
+          "@type" : "xsd:string",
+          "http://www.w3.org/2000/01/rdf-schema#label":  "Part of the entity"
+      },
+      "quality": {
+          "@id": "_:quality",
+          "@type" : "xsd:string",
+          "http://www.w3.org/2000/01/rdf-schema#label":  "Quality"
+      }
+  }],
+    "analysis": [
+        {
+        {% set analysisName = baseuri + "#Analysis1" %}
+    "@id": "{{ analysisName }}",
+    "@type": "marl:SentimentAnalysis"
+ }
+],
+"entries": [
+{% set first = True %}
+{% set instrings=False %}
+{% for i in range(1, sheet.nrows) %}
+{% set node="_:BlankNode%s" % i %}
+    {% set row= sheet.row_values(i) %}
+    {% set TEXT = row[0] %}
+    {% set LEMMA = row[1] %}
+    {% set WN_POS = row[2] %}
+    {% set WN_SYNSET = row[3] %}
+    {% set DOMAIN = row[4] %}
+    {% set BRAND = row[5] %}
+    {% set KIND = row[6] %}
+    {% set PRODUCT = row[7] %}
+    {% set PART = row[8] %}
+    {% set QUALITY = row[9] %}
+    {% set SENTIMENT = row[10] %}
+    {% set EMOTION = row[11] %}
+ {% if TEXT %}
+ {% if DOMAIN %}
+  {% if first %} {% set first = False %} {% else %} ,{% endif %} {
+    "@id": "{{ node }}",
+    "dc:subject": "expsys:{{ DOMAIN | escape }}",
+    "opinions": [ {
+      "marl:polarity": "expsys:{{ SENTIMENT | escape }}"
+    }],
+    {% if EMOTION %}
+    "emotions": [ {
+         "onyx:hasEmotion": { "onyx:hasEmotionCategory": {{ EMOTION | escapejs }} }
+     }],
+     {% endif %}
+    "prov:wasGeneratedBy": "{{ analysisName }}",
+    "strings": [
+    {% set instrings = True %}
+    {% set firstString = True %}
+    {% else %}
+    {% if firstString %} {% set firstString = False %} {% else %} ,{% endif %}{
+   			"nif:anchorOf": {{ TEXT | escapejs }}{% if WN_POS not in ("N/S", "N/C") %},
+        	"nif:posTag": {{ WN_POS | escapejs}} {% endif %}{% if LEMMA not in ("#", ) %}, 
+ 			"nif:lemma": {{ LEMMA | escapejs }}{%endif%}{% if WN_SYNSET not in ("N/S", "N/C") %},
+            "expsys:synset": {{ WN_SYNSET | escapejs }} {% endif %}
+            
+        }
+    {% endif %}
+    {% else %}
+    {% if instrings %}
+    {% set instrings=False %}
+                ]
+    }
+    {% endif %}
+    {% endif %}
+    {% if loop.last and instrings %}
+    			]
+    }
+    {% endif %}
+{% endfor %}
+]
+}
