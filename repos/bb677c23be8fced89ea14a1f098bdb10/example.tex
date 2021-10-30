@@ -1,0 +1,22 @@
+\usepackage{adjustbox}
+\usepackage{array}
+
+\newcolumntype{R}[2]{%
+    >{\adjustbox{angle=#1,lap=\width-(#2)}\bgroup}%
+    l%
+    <{\egroup}%
+}
+\newcommand*\rot{\multicolumn{1}{R{45}{1em}}}% no optional argument here, please!
+
+\begin{document}
+
+\begin{tabular}{r|ccc}
+&
+\rot{Property 1} &
+\rot{Property 2} &
+\rot{Property 3}
+    \\ \hline
+System 1        &       &       &  X    \\ 
+System 2        & X     & X     &  X    \\
+System 3        & X &   &  X    \\ \hline
+\end{tabular}
