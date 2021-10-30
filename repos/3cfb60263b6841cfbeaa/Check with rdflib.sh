@@ -1,0 +1,1 @@
+python -c 'import rdflib; g=rdflib.Graph(); g.parse("prueba.ttl", format="n3"); print(g.serialize(format="n3").str)'
