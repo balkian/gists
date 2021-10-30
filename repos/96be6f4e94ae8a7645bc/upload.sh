@@ -1,0 +1,1 @@
+curl http://alpha.gsi.dit.upm.es:3030/onyx/upload -F 'UNSET FILE NAME=@testResults.rdf;type=application/rdf+xml' -F 'graph=http://example.com/prueba'
