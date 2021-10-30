@@ -1,0 +1,1 @@
+curl --data-urlencode ontology@testResults.owl http://owl.cs.manchester.ac.uk/validator/validate
