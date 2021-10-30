@@ -1,0 +1,11 @@
+def array_combinations(*args):
+    combinations = set([frozenset([i]) for i in set(args[0])])
+    for arg in args[1:]:
+        tempcomb = []
+        for i in set(arg):
+            tempcomb += [frozenset(list(c)+[i]) for c in combinations if i not in c ]
+        combinations = set(tempcomb)
+    return [list(comb) for comb in combinations]
+res = array_combinations(a,b)
+print res
+print len(res)

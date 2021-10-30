@@ -1,0 +1,14 @@
+a=set([1,2,3,4])
+b=set([4,5,6,7])
+c=set([7,8,9])
+def array_combinations(*args):
+    combinations = [[i] for i in set(args[0])]
+    for arg in args[1:]:
+        tempcomb = []
+        for i in set(arg):
+            tempcomb += [c+[i] for c in combinations if i not in c ]
+        combinations = tempcomb
+    return combinations
+res = array_combinations(a,b,c)
+print res
+print len(res)
