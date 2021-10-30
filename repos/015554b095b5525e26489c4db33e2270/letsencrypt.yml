@@ -1,0 +1,20 @@
+- hosts: all
+  name: "Let's encrypt"
+  tasks:
+    - name: Add certbot to crontab
+      cron: name="Letsencrypt certificates" month="*/2" minute=5 hour=0
+            cron_file="letsencrypt-autoupdate"
+            user="root"
+            job="/usr/bin/docker run -t --rm --name certbot \
+            -v '/etc/letsencrypt/:/etc/letsencrypt' \
+            -v '/var/lib/letsencrypt:/var/lib/letsencrypt' \
+            -v '/var/www/letsencrypt:/webroot' \
+            quay.io/letsencrypt/letsencrypt:latest auth --webroot -w /webroot/ \
+            -m {{ le_admin }} \
+            --expand --agree-tos --keep --quiet \
+            -d {{ le_domains | join(' -d ') }}"
+      vars:
+          le_admin: admin@admin.com
+          le_domains: 
+            - admin.com
+  become: yes
