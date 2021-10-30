@@ -1,7 +1,0 @@
-# Replace define(ACROREAD, [repeat swallow(acroread) fill :
-# acroread -openInNewWindow /a "$fragment" "$file"])
-#
-# With the following in /etc/mozpluggerrc to have evince as
-# an embedded pdf viewer in chromium:
-
-define(ACROREAD, [repeat swallow(evince) fill needs_xembed : evince -f "$file"])
