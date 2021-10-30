@@ -1,0 +1,51 @@
+{% set f = open_file(informat="csv", delimiter='\t') %}
+{
+  "@context": [
+    "http://demos.gsi.dit.upm.es/eurosentiment/static/context.jsonld"
+  ],
+  "@id": "GSI-UPM",
+  "analysis": [
+    {
+      "prov:wasAssociatedWith": "GSI_UPM",
+      "dc:language": "en",
+      "marl:maxPolarityValue": 1,
+      "marl:minPolarityValue": -1
+    }
+  ],
+  "entries": [ {% for row in f %}
+   {% if not row %}
+
+      ]
+    }{% if not loop.last %},{% endif -%}
+   {% elif row[0] == "#webanno.custom.Sentiment | Sentimentvalue" %}
+   {% elif row[0][0:4] == '#id=' %}
+    {% set currentid = row[0][4:] %}
+    {
+      "@id": {{ currentid | escapejs }},
+    {% elif row[0][0:6] == '#text=': %}
+      "nif:isString": {{ row[0][6:] | escapejs }},
+      "strings": [
+        {% set first = True %}
+   {% elif row and row[0].split('-')[0] == currentid %}
+     {% set word = row[1] %}
+     {% set pol = row[2].split('-')[-1] %}
+     {% if not first %},
+     {% else %} {% set first = False %} {% endif %}
+        {
+          "@id": "substring{{ row[0] }}",
+          "nif:anchorOf": {{ word | escapejs }},
+        {% if pol == 'Positive' %}
+          "marl:polarityValue": 1,
+          "marl:hasPolarity": "Positive"
+        {% elif pol == 'Negative' %}
+          "marl:polarityValue": -1,
+          "marl:hasPolarity": "Negative"
+        {% elif pol == 'Neutral' or pol == "O" %}
+          "marl:polarityValue": 0,
+          "marl:hasPolarity": "Neutral"
+        {%endif%}
+        }
+  {%- endif %}
+  {% endfor %}
+  ]
+}
