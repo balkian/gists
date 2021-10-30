@@ -1,0 +1,1 @@
+alter table t alter column j type jsonb using j::text::jsonb;
