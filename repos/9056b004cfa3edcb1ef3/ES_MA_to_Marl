@@ -1,0 +1,75 @@
+{% set sheet=f.sheet_by_index(0) %}
+{
+  "@context": {
+    "marl": "http://gsi.dit.upm.es/ontologies/marl#",
+    "expsys": "http://expertsystems.com/domains#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "marl:domain": {
+        "@type": "@id"    
+    },
+    "brand": {
+        "@id": "_:brand",
+        "@type" : "xsd:string",
+        "http://www.w3.org/2000/01/rdf-schema#label":  "Brand of the entity"
+    },
+    "model": {
+        "@id": "_:model",
+        "@type" : "xsd:string",
+        "http://www.w3.org/2000/01/rdf-schema#label":  "Model of the entity"
+    },
+    "part": {
+        "@id": "_:part",
+        "@type" : "xsd:string",
+        "http://www.w3.org/2000/01/rdf-schema#label":  "Part of the entity"
+    },
+    "quality": {
+        "@id": "_:quality",
+        "@type" : "xsd:string",
+        "http://www.w3.org/2000/01/rdf-schema#label":  "Quality"
+    },
+    "emotion": {
+        "@id": "_:emotion",
+        "@type" : "xsd:string",
+        "http://www.w3.org/2000/01/rdf-schema#label":  "Emotion"
+    }
+  },
+  "@graph": [
+ {
+    {% set analysisName = "".join(linesplit(filename,"/")[-1].rsplit(".")[:-1]) %}
+    "@id": "{{ analysisName}}",
+    "@type": "marl:SentimentAnalysis"
+ }
+{% for i in range(1, sheet.nrows) %}
+{% set node="_:BlankNode%s" % i %}
+    {% set row= sheet.row_values(i) %}
+    {% set TEXT = row[0] %}
+    {% set LEMMA = row[1] %}
+    {% set WN_POS = row[2] %}
+    {% set WN_SYNSET = row[3] %}
+    {% set DOMAIN = row[4] %}
+    {% set BRAND = row[5] %}
+    {% set KIND = row[6] %}
+    {% set PRODUCT = row[7] %}
+    {% set PART = row[8] %}
+    {% set QUALITY = row[9] %}
+    {% set SENTIMENT = row[10] %}
+    {% set EMOTION = row[11] %}
+ {% if DOMAIN %}
+  ,{
+    "@id": "{{ node }}",
+    "@type": "marl:opinion",
+    "marl:opinionText": {{ TEXT | escapejs }},
+    "marl:domain": "expsys:{{ DOMAIN | escape }}",
+    "marl:polarity": "expsys:{{ SENTIMENT | escape }}",
+    "brand": {{ BRAND | escapejs }},
+    "kind": {{ KIND | escapejs }},
+    "product": {{ PRODUCT | escapejs }},
+    "quality": {{ QUALITY | escapejs }},
+    "emotion": {{ EMOTION | escapejs }},
+    "prov:wasGeneratedBy": "{{ analysisName }}"
+  }
+    {% endif %}
+{% endfor %}
+]
+}

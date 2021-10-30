@@ -1,0 +1,102 @@
+{% set sheet=f.sheet_by_index(0) %}
+{
+    "@context": {
+        "@base": "http://demos.gsi.dit.upm.es/eurosentiment/generator#{{ filename }}",
+        "dc": "http://purl.org/dc/terms/",
+        "dc:subject": {
+            "@type": "@id"
+        },
+        "emotions": {
+            "@container": "@list",
+            "@id": "onyx:hasEmotionSet",
+            "@type": "onyx:EmotionSet"
+        },
+        "marl": "http://www.gsi.dit.upm.es/ontologies/marl#",
+        "nif": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#",
+        "onyx": "http://www.gsi.dit.upm.es/ontologies/onyx#",
+        "pt": "http://paradigmatecnologico.com/domains#",
+        "opinions": {
+            "@container": "@list",
+            "@id": "marl:hasOpinion",
+            "@type": "marl:Opinion"
+        },
+        "prov": "http://www.w3.org/ns/prov#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "results": {
+            "@container": "@index",
+            "@id": "@graph"
+        },
+        "strings": {
+            "@reverse": "nif:hasContext",
+            "@type": "nif:String"
+        },
+        "wnaffect": "http://www.gsi.dit.upm.es/ontologies/wnaffect#",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "brand": {
+          "@id": "_:brand",
+          "@type" : "xsd:string",
+          "http://www.w3.org/2000/01/rdf-schema#label":  "Brand of the entity"
+      },
+      "model": {
+          "@id": "_:model",
+          "@type" : "xsd:string",
+          "http://www.w3.org/2000/01/rdf-schema#label":  "Model of the entity"
+      },
+      "part": {
+          "@id": "_:part",
+          "@type" : "xsd:string",
+          "http://www.w3.org/2000/01/rdf-schema#label":  "Part of the entity"
+      },
+      "quality": {
+          "@id": "_:quality",
+          "@type" : "xsd:string",
+          "http://www.w3.org/2000/01/rdf-schema#label":  "Quality"
+      }
+  },
+  "results": {
+    "analysis": [
+        {
+        {% set analysisName = "".join(linesplit(filename,"/")[-1].rsplit(".")[:-1]) %}
+    "@id": "{{ analysisName}}",
+    "@type": "marl:SentimentAnalysis"
+ }
+],
+"entries": [
+{% set first = True %}
+{% for i in range(1, sheet.nrows) %}
+{% set node="_:BlankNode%s" % i %}
+    {% set row= sheet.row_values(i) %}
+    {% set TEXT = row[0] %}
+    {% set LEMMA = row[1] %}
+    {% set WN_POS = row[2] %}
+    {% set WN_SYNSET = row[3] %}
+    {% set DOMAIN = row[4] %}
+    {% set BRAND = row[5] %}
+    {% set KIND = row[6] %}
+    {% set PRODUCT = row[7] %}
+    {% set PART = row[8] %}
+    {% set QUALITY = row[9] %}
+    {% set SENTIMENT = row[10] %}
+    {% set EMOTION = row[11] %}
+ {% if DOMAIN %}
+  {% if first %} {% set first = False %} {% else %} ,{% endif %} {
+    "@id": "{{ node }}",
+    "dc:subject": "expsys:{{ DOMAIN | escape }}",
+    "strings": [ {{ TEXT | escapejs }} ],
+    "opinions": [ {
+      "marl:polarity": "expsys:{{ SENTIMENT | escape }}",
+      "brand": {{ BRAND | escapejs }},
+      "kind": {{ KIND | escapejs }},
+      "product": {{ PRODUCT | escapejs }},
+      "quality": {{ QUALITY | escapejs }}
+    }],
+    "emotions": [ {
+         "onyx:hasEmotion": { "onyx:hasEmotionCategory": {{ EMOTION | escapejs }} }
+     }],
+    "prov:wasGeneratedBy": "{{ analysisName }}"
+    }
+    {% endif %}
+{% endfor %}
+]
+}
+}

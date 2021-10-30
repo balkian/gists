@@ -1,0 +1,88 @@
+{
+  "@context": "http://demos.gsi.dit.upm.es/eurosentiment/static/context.jsonld",
+    "analysis": [
+      {
+        "@id": "es:TripAdvisor",
+        "@type": [
+          "marl:SentimentAnalysis"
+          ],
+        "marl:maxPolarityValue": 0.0,
+        "marl:minPolarityValue": 5.0
+      }
+    ],
+    "entries": [
+{% set current = {} %}
+{% set number = 0 %}
+{% for line in f %}
+  {% if line[0] != "<" or loop.last %}
+   {% if "Author" in current %}
+    {
+      "nif:isString": {{ current["Content"] | escapejs}},
+      "dc:language": "en",
+      "prov:wasDerivedFrom": {
+        "@type": "es:TripadvisorComment",
+        "date": "{{ convertDate(current["Date"], "%b %d, %Y") if "Date" in current}}"{% if "Author" in current %},
+        "user": {{ current["Author"] | escapejs }}
+        {% endif %}
+      },
+      "opinions": [
+      {% if "Overall" in current %}
+        {
+          "@id": "_:Opinion{{ number }}1",
+          "marl:hasPolarity": "marl:Positive",
+          "marl:polarityValue": {{ current["Overall"] }},
+          "marl:describesObjectFeature": "Overall"
+        }, {%endif %}{% if "Value" in current %}
+        {
+          "@id": "_:Opinion{{ number }}2",
+          "marl:hasPolarity": "marl:Positive",
+          "marl:polarityValue": {{ current["Value"] }},
+          "marl:describesObjectFeature": "es:Value"
+        }, {% endif %}{% if "Rooms" in current %}
+        {
+          "@id": "_:Opinion{{ number }}3",
+          "marl:hasPolarity": "marl:Positive",
+          "marl:polarityValue": {{ current["Rooms"] }},
+          "marl:describesObjectPart": "es:Rooms"
+        }, {% endif %}{% if "Location" in current %}
+        {
+          "@id": "_:Opinion{{ number }}4",
+          "marl:hasPolarity": "marl:Positive",
+          "marl:polarityValue": {{ current["Location"] }},
+          "marl:describesObjectFeature": "es:Location"
+        }, {% endif %}{% if "Cleanliness" in current %}
+        {
+          "@id": "_:Opinion{{ number }}5",
+          "marl:hasPolarity": "marl:Positive",
+          "marl:polarityValue": {{ current["Cleanliness"] }},
+          "marl:describesObjectFeature": "es:Cleanliness"
+        }, {% endif %}{% if "Check in / front desk" in current %}
+        {
+          "@id": "_:Opinion{{ number }}6",
+          "marl:hasPolarity": "marl:Positive",
+          "marl:polarityValue": {{ current["Check in / front desk"] }},
+          "marl:describesObjectPart": "es:Check_In"
+        }, {% endif %}{% if "Service" in current %}
+        {
+          "@id": "_:Opinion{{ number }}7",
+          "marl:hasPolarity": "marl:Positive",
+          "marl:polarityValue": {{ current["Service"] }},
+          "marl:describesObjectFeature": "es:Service"
+        }, {% endif %}{% if "Business service" in current %} {
+          "@id": "_:Opinion{{ number }}8",
+          "marl:hasPolarity": "marl:Positive",
+          "marl:polarityValue": {{ current["Business service"] }},
+          "marl:describesObjectPart": "es:Business_Service"
+        }{% endif %}
+      ]
+    } {{ "," if not loop.last }}
+    {% endif %}
+    {% set current = {} %}
+    {% set number = number+1 %}
+  {% else %}
+    {% set attr,value = line[1:].strip().split(">", 1) %}
+    {% do current.update({attr: value}) %}
+  {% endif %}
+{% endfor %}
+  ]
+}

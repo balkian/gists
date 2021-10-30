@@ -1,0 +1,47 @@
+{
+  "@context": {
+    "marl": "http://gsi.dit.upm.es/ontologies/marl#",
+    "pt": "http://paradigmatecnologico.com/domains#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "marl:domain": {
+        "@type": "@id"    
+    },
+    "field0": {
+        "@id": "_:field0",
+        "@type" : "xsd:string"
+    },
+    "field3": {
+        "@id": "_:field3",
+        "@type" : "xsd:string"
+    },
+    "field4": {
+        "@id": "_:field4",
+        "@type" : "xsd:string"
+    } 
+  },
+  "@graph": [
+
+ {
+    "@id": "{{ linesplit(f.name,"/")[-1] }}",
+    "@type": "marl:SentimentAnalysis",
+    "marl:maxPolarityValue": 10,
+    "marl:minPolarityValue": 0
+  },
+{% for line in f %}
+{% set i=linesplit(line, "\t") %}
+{% set node="_:BlankNode%s" % loop.index %}
+  {
+    "@id": "{{ node }}",
+    "@type": "marl:opinion",
+    "marl:opinionText": "{{ i[2] | escape }}",
+    "marl:extractedfrom": "{{ i[5] }}",
+    "marl:domain": "pt:{{ i[1] }}",
+    "marl:polarityValue": {{ i[6] }},
+    "field0": "{{ i[0] }}",
+    "field3": "{{ i[3] }}",
+    "field4": "{{ i[4] }}"
+
+  } {% if not loop.last %} , {% endif %}
+{% endfor %}
+]
+}
