@@ -1,0 +1,2 @@
+ffmpeg -r 25 -loop 1 -i Uni/PFC/portadavideo.png -b 299k -r 15 -vcodec libschroe
+dinger-t 5 bumper.ogv
