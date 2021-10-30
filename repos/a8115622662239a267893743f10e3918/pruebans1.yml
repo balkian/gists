@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pruebans1
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: pruebans1
+  name: pruebans1
+  namespace: pruebans1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pruebans1
+    spec:
+      containers:
+      - image: busybox:1.28
+        name: pruebans1
+        command: [ "sh", "-c", "while true; do echo $(hostname); sleep 60; done" ]
+        ports:
+        - name: http
+          containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pruebans1
+  namespace: pruebans1
+spec:
+  ports:
+  - name: pruebans1
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: pruebans1
