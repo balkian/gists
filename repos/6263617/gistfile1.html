@@ -1,0 +1,126 @@
+<style media="all" type="text/css">
+#badge{
+  font-size: 12px;
+  position: relative;
+  width: 180px;
+  height: 210px;
+  margin: 0 auto;
+  /*border-bottom: 10px solid black;*/
+  -webkit-transform:rotate(4deg);
+  -moz-transform:rotate(4deg);
+}
+
+/* entire container, keeps perspective */
+.flip-container {
+  perspective: 1000;
+  -webkit-perspective: 1000;
+}
+/* flip the pane when hovered */
+.flip-container:hover .flipper, .flip-container.hover .flipper {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.flip-container, .front, .back {
+  width: 180px;
+  height: 180px;
+}
+
+/* flip speed goes here */
+.flipper {
+  transition: 0.8s;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+
+  position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 2px;
+  padding-bottom: 30px;
+  background-color: black;
+  box-shadow: -10px 10px 5px #222;
+  -webkit-box-shadow: -10px 10px 15px #222;
+  -moz-box-shadow: -10px 10px 15px #222;
+}
+
+/* front pane, placed above back */
+.front {
+  z-index: 4;
+}
+
+/* back, initially hidden pane */
+.back {
+  width: 152px;
+  height: 190px;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  z-index: 3;
+  text-align: center;
+  padding: 15px;
+  padding-top: 5px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #333;
+  border-right-color: #555;
+  border-top-color: #555;
+
+  color: white;
+}
+
+.back h1 {
+  font-size: 14px;
+  padding: 4px;
+  margin: 2px;
+  border-bottom: 1px dashed gray;
+}
+
+.back dl {
+  text-align: left;
+}
+
+.sticky:before {
+  content: "";
+  height: 20px;
+  width: 80px;
+  background: rgba(255,255,255,0.5);
+  position: absolute;
+  
+  -webkit-box-shadow: 0px 1px 3px rgba(0,0,0,0.4);
+     -moz-box-shadow: 0px 1px 3px rgba(0,0,0,0.4);
+          box-shadow: 0px 1px 3px rgba(0,0,0,0.4);
+  top: 0;
+  left: 50%;
+  margin: -8px 0 0 -40px;
+  z-index: 5;
+}
+
+
+</style>
+
+<div ontouchstart="this.classList.toggle('hover');" class="flip-container" id="badge">
+    <div class="flipper">
+      <div class="front">
+        <!-- front content -->
+        <img width="180" height="180" src="http://1.bp.blogspot.com/-u19-E3_AuGI/UIH9pgHT0VI/AAAAAAAAAFg/NFwtLZUOF24/s1600/Homer-Mr+X1.jpg" class="sticky" id="avatar">
+      </div>
+      <div class="back">
+        <!-- back content -->
+          <h1>Experto en LTE</h1>
+            <dl>
+                <dt>Nombre:</dt>
+                <dd> Mr X</dd>
+                <dt>Ocupación:</dt>
+                <dd>Experto en LTE</dd>
+                <dt>Sexo:</dt>
+                <dd>Sí, por favor</dd>
+            </dl>
+      </div>
+    </div>
+</div>
